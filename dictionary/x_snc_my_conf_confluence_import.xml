@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Confluence Import" max_length="40" name="x_snc_my_conf_confluence_import" type="collection">
+        <element attributes="edge_encryption_enabled=true" display="true" label="Short Description" max_length="40" name="u_short_desc" type="string"/>
+        <element label="Target KB" max_length="32" name="u_targetkb" reference="kb_knowledge_base" type="reference"/>
+        <element label="Trigger Import" max_length="40" name="u_trigger" type="boolean"/>
+        <index name="index">
+            <element name="u_targetkb"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Confluence Spaces" max_length="40" name="x_snc_my_conf_confluence_spaces" type="collection">
+        <element display="true" label="label" max_length="10" name="label" type="string"/>
+        <element label="Uses this configuration" max_length="32" name="uses_this_configuration" reference="x_snc_my_conf_confluence_import" type="reference"/>
+        <element label="value" max_length="10" name="value" type="string"/>
+        <index name="index">
+            <element name="uses_this_configuration"/>
+        </index>
+    </element>
+</database>

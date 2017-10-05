@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>get_conf_data</action_name>
+        <active>true</active>
+        <client>true</client>
+        <comments/>
+        <condition/>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_style/>
+        <hint/>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <name>Trigger Import</name>
+        <onclick>runMyClientCode()</onclick>
+        <order>100</order>
+        <script><![CDATA[//Client-side 'onclick' function
+function runMyClientCode(){
+  // if(<CONDITION_TO_VALIDATE> == false){
+   //   return false;  //Abort submission
+  // }
+   //Call the UI Action and skip the 'onclick' function
+   gsftSubmit(null, g_form.getFormElement(), 'get_conf_data'); //MUST call the 'Action name' set in this UI Action
+}
+
+//Code that runs without 'onclick'
+//Ensure call to server-side function with no browser errors
+if(typeof window == 'undefined')
+   runBusRuleCode();
+
+//Server-side function
+function runBusRuleCode(){
+ 
+//wipe out existing kb articles in target knowledge base
+//re-import everything from confluence
+	
+	var kbarticles = new GlideRecord ('kb_knowledge');
+	kbarticles.get('kb_knowledge_base',current.u_targetkb);
+	kbarticles.deleteMultiple();
+//	kbarticles.update();
+getSpaces();
+
+function getSpaces(){
+var spaces = new GlideRecord ('x_snc_my_conf_confluence_spaces');
+
+spaces.addQuery('uses_this_configuration',current.sys_id);
+spaces.query(); 
+
+while (spaces.next()) { 
+getArticles(spaces.value);
+}
+
+	}
+	
+function getArticles(spaceID) {
+//gs.addInfoMessage('here with space ' + spaceID);
+
+ var articles = new sn_ws.RESTMessageV2('x_snc_my_conf.myConfluence', 'getContent');	 
+
+articles.setStringParameterNoEscape('spaceid', spaceID);
+
+var response = articles.execute();
+var responseBody = response.getBody();
+var httpStatus = response.getStatusCode();
+
+//gs.addInfoMessage(responseBody);
+
+var obj = global.JSON.parse(responseBody);
+
+var arrayLength = obj.page.results.length;
+	//gs.addInfoMessage (arrayLength);
+for (var i = 0; i < arrayLength; i++) {
+    //Do something
+	//gs.addInfoMessage (obj.page.results[i].id);
+	articleID = obj.page.results[i].id;
+
+	articleContents = obj.page.results[i].body.storage.value;
+	articleTitle = obj.page.results[i].title;
+	
+	var kbarticles = new GlideRecord ('kb_knowledge');
+	
+	kbarticles.short_description = articleTitle;
+	kbarticles.text = "[code]" + articleContents + "[code]";
+	kbarticles.kb_knowledge_base = current.u_targetkb;
+	
+	//get labels + set meta
+	
+var getLabels = new sn_ws.RESTMessageV2('x_snc_my_conf.myConfluence', 'getLabels');
+getLabels.setStringParameterNoEscape('articleID', articleID);
+var LabelsResponse = getLabels.execute();
+var LabelresponseBody = LabelsResponse.getBody();
+
+var LabelsObj = global.JSON.parse(LabelresponseBody);
+var LabelsarrayLength = LabelsObj.results.length;
+//gs.addInfoMessage (articleID + " - " + LabelsObj.results.name);
+
+	
+var meta = '';	
+for (var z = 0; z < LabelsarrayLength; z++) {
+ // gs.addInfoMessage (articleID + " - " + LabelsObj.results[z].name);
+	meta += LabelsObj.results[z].name +",";
+	//gs.addInfoMessage (LabelsObj.results[z].name);
+	
+}
+	kbarticles.meta = meta;
+	//kbarticles.setWorkflow(false);
+	kbarticles.insert();
+	kbarticles.workflow_state = 'published';
+	//kbarticles.setWorkflow(false);
+	kbarticles.update();
+	//action.setRedirectURL(current);
+}
+	
+}	
+	
+// var httpStatus = response.getStatusCode();
+		gs.addInfoMessage ("All done.... Knowledge imported");
+   action.setRedirectURL(current);
+}]]></script>
+        <show_insert>true</show_insert>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-10-05 02:27:16</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>f10f9f66db69c340a78bf47dbf96193c</sys_id>
+        <sys_mod_count>118</sys_mod_count>
+        <sys_name>Trigger Import</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Confluence Integration" source="x_snc_my_conf">b2c2731adb2d8340a78bf47dbf961991</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Confluence Integration">b2c2731adb2d8340a78bf47dbf961991</sys_scope>
+        <sys_update_name>sys_ui_action_f10f9f66db69c340a78bf47dbf96193c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-10-05 10:17:16</sys_updated_on>
+        <table>x_snc_my_conf_confluence_import</table>
+        <ui11_compatible>true</ui11_compatible>
+        <ui16_compatible>true</ui16_compatible>
+    </sys_ui_action>
+</record_update>

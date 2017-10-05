@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>get_conf_spaces</action_name>
+        <active>true</active>
+        <client>true</client>
+        <comments/>
+        <condition/>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_style/>
+        <hint/>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <name>Get Confluence SPACES</name>
+        <onclick>runClientCode()</onclick>
+        <order>100</order>
+        <script><![CDATA[//Client-side 'onclick' function
+function runClientCode(){
+  // if(<CONDITION_TO_VALIDATE> == false){
+   //   return false;  //Abort submission
+  // }
+   //Call the UI Action and skip the 'onclick' function
+   gsftSubmit(null, g_form.getFormElement(), 'get_conf_spaces'); //MUST call the 'Action name' set in this UI Action
+}
+
+//Code that runs without 'onclick'
+//Ensure call to server-side function with no browser errors
+if(typeof window == 'undefined')
+   runBusRuleCode();
+
+//Server-side function
+function runBusRuleCode(){
+  // current.<field_name> = <value>;
+  // current.update();
+   // gs.addInfoMessage('You did it!');
+ var r = new sn_ws.RESTMessageV2('x_snc_my_conf.myConfluence', 'getSpaces');
+
+ var response = r.execute();
+ var responseBody = response.getBody();
+//gs.addInfoMessage (responseBody);
+
+	var obj = global.JSON.parse(responseBody);
+	
+	//wipe existing spaces
+      var confSpaces = new GlideRecord('x_snc_my_conf_confluence_spaces');
+      confSpaces.addQuery('uses_this_configuration', current.sys_id);
+      confSpaces.deleteMultiple();
+	//count length of results array
+ 
+gs.addInfoMessage (obj.results.length);
+//gs.addInfoMessage (obj.results[0].key);
+	
+var arrayLength = obj.results.length;
+for (var i = 0; i < arrayLength; i++) {
+    //Do something
+	gs.addInfoMessage (obj.results[i].key);
+var addSpace = new GlideRecord('x_snc_my_conf_confluence_spaces');
+	
+addSpace.initialize(); 
+addSpace.label = obj.results[i].key; 
+addSpace.value = obj.results[i].key; 
+addSpace.uses_this_configuration = current.sys_id;
+addSpace.insert();
+}
+	
+	
+ var httpStatus = response.getStatusCode();
+		
+   action.setRedirectURL(current);
+}
+
+
+
+]]></script>
+        <show_insert>true</show_insert>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-10-04 12:38:37</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>c241a826dbed8340a78bf47dbf961909</sys_id>
+        <sys_mod_count>56</sys_mod_count>
+        <sys_name>Get Confluence SPACES</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Confluence Integration" source="x_snc_my_conf">b2c2731adb2d8340a78bf47dbf961991</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Confluence Integration">b2c2731adb2d8340a78bf47dbf961991</sys_scope>
+        <sys_update_name>sys_ui_action_c241a826dbed8340a78bf47dbf961909</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-10-04 23:20:03</sys_updated_on>
+        <table>x_snc_my_conf_confluence_import</table>
+        <ui11_compatible>true</ui11_compatible>
+        <ui16_compatible>true</ui16_compatible>
+    </sys_ui_action>
+</record_update>

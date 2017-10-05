@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="uses_this_configuration" label="Uses this configuration" language="en" table="x_snc_my_conf_confluence_spaces">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>uses_this_configuration</element>
+            <help/>
+            <hint/>
+            <label>Uses this configuration</label>
+            <language>en</language>
+            <name>x_snc_my_conf_confluence_spaces</name>
+            <plural>Uses this configurations</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2017-10-04 20:52:54</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>3b725626db65c340a78bf47dbf9619dc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Uses this configuration</sys_name>
+            <sys_package display_value="Confluence Integration" source="x_snc_my_conf">b2c2731adb2d8340a78bf47dbf961991</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="Confluence Integration">b2c2731adb2d8340a78bf47dbf961991</sys_scope>
+            <sys_update_name>sys_documentation_x_snc_my_conf_confluence_spaces_uses_this_configuration_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2017-10-04 20:52:54</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>
